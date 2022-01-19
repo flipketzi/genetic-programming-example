@@ -3,8 +3,9 @@ package entities;
 import com.sun.source.tree.Tree;
 
 import java.io.IOException;
-import java.lang.reflect.Array;
+import java.sql.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Random;
 
 public class TreeNode {
@@ -13,6 +14,10 @@ public class TreeNode {
     public final static String[] VARIABLES = new String[]{"x", "y"};
     public final static String[] OPERATORS = new String[]{"+", "-", "*"};
     public final static String[] VALUES = new String[]{"1", "2", "3"};
+
+    private String type;
+    private Entity ent;
+    private ArrayList<TreeNode> children = new ArrayList<>();
 
     public static String getRandomOperator(){
         return OPERATORS[new Random().nextInt(OPERATORS.length)];
@@ -27,11 +32,6 @@ public class TreeNode {
         };
     }
 
-
-    private String type;
-    private Entity ent;
-    private ArrayList<TreeNode> children = new ArrayList<>();
-
     //Value Node
     public TreeNode(String type, Entity ent, int depth){
         this.type = type;
@@ -42,6 +42,11 @@ public class TreeNode {
             case "-" -> this.growChildren(depth);
             case "*" -> this.growChildren(depth);
         }
+    }
+    public TreeNode(String type, Entity ent, ArrayList<TreeNode> children){
+        this.type = type;
+        this.ent = ent;
+        this.children = children;
     }
 
     public int calculate(){
@@ -65,6 +70,10 @@ public class TreeNode {
         this.children.add(node2);
     }
 
+    public ArrayList<TreeNode> getChildren(){
+        return this.children;
+    }
+
     public void growChildren(int remainingDepth){
         if(remainingDepth <= 1){
             children.add(new TreeNode(this.getRandomConstant(), this.ent, (remainingDepth - 1)));
@@ -74,6 +83,32 @@ public class TreeNode {
             children.add(new TreeNode(this.getRandomOperator(), this.ent, (remainingDepth - 1)));
         }
 
+    }
+
+    public void mutate(double prob){
+        if(Math.random() < prob){
+            //mutate this node
+            if( Arrays.stream(OPERATORS).anyMatch(this.type::equals)){
+                this.type = this.getRandomOperator();
+            }else if(Arrays.stream(VALUES).anyMatch(this.type::equals)){
+                this.type = this.getRandomConstant();
+            }else if(Arrays.stream(VARIABLES).anyMatch(this.type::equals)){
+                this.type = this.getRandomConstant();
+            }
+        }
+        if(children.size() != 0){
+            for(TreeNode c : children){
+                c.mutate(prob);
+            }
+        }
+    }
+
+    public TreeNode copy(){
+        ArrayList<TreeNode> copyChildren = new ArrayList<>();
+        for(TreeNode c : children){
+            copyChildren.add(c.copy());
+        }
+        return new TreeNode(this.type, this.ent, copyChildren);
     }
 
     public void printTree(){
@@ -86,5 +121,16 @@ public class TreeNode {
             System.out.print(this.type);
         }
         System.out.print("}");
+    }
+
+    public Entity getEnt() {
+        return ent;
+    }
+
+    public void setEnt(Entity ent) {
+        this.ent = ent;
+        for(TreeNode c : this.children){
+            c.setEnt(ent);
+        }
     }
 }

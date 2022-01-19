@@ -17,6 +17,7 @@ public class Simulation implements KeyListener, Runnable
 	public final static int BLOCKSIZE = 50;
 	private EntityController entityController;
 	private RenderController rc;
+	public static boolean running = false;
 	private StatsContainer sc = new StatsContainer("0.09", "");
 	private int iteration = 0;
 	Thread t;
@@ -25,10 +26,18 @@ public class Simulation implements KeyListener, Runnable
 	public static void main(String[] args)
 	{
 		Entity e = new Entity(new Vector2D(50, 50));
-		System.out.println(e.getBrain().getDirectionVector().normalize());
-		System.out.println(e.getPosition());
+		Entity e2 = new Entity(new Vector2D(50, 50));
+		e2.setBrain(e.getBrain().copy());
+		e.getBrain().getRoot().printTree();
+		System.out.println("---------------");
+		e2.getBrain().getRoot().printTree();
+		e.getBrain().mutate(0.5);
+		System.out.println("---------------");
+		e.getBrain().getRoot().printTree();
+		System.out.println("---------------");
+		e2.getBrain().getRoot().printTree();
 
-		new Simulation();
+		//new Simulation();
 	}
 
 	public Simulation()
@@ -54,7 +63,7 @@ public class Simulation implements KeyListener, Runnable
 
 		entityController = new EntityController(envController);
 		EntityRenderer entityRenderer = new EntityRenderer(null, entityController);
-		entityController.createEntities(500);
+		entityController.createInitialEntities(100);
 
 		sc.setValue("map_name", mapPath);
 		StatsRenderer sr = new StatsRenderer(sc, (envController.getMap().getSizeX()*BLOCKSIZE) + 20);
@@ -67,6 +76,7 @@ public class Simulation implements KeyListener, Runnable
 		rc.setFrame(frame);
 		rc.triggerRepaint();
 
+		this.running = true;
 		t = new Thread(this);
 		t.run();
 
@@ -82,8 +92,6 @@ public class Simulation implements KeyListener, Runnable
 			this.iteration++;
 			sc.setValue("iteration", String.valueOf(this.iteration));
 		}
-
-
 	}
 
 	@Override
@@ -97,7 +105,7 @@ public class Simulation implements KeyListener, Runnable
 
 	@Override
 	public void run() {
-		while (iteration < 300000)
+		while (running)
 		{
 			iteration++;
 			entityController.update();
@@ -105,7 +113,7 @@ public class Simulation implements KeyListener, Runnable
 
 			sc.setValue("iteration", String.valueOf(this.iteration));
 			try {
-				Thread.sleep(10);
+				Thread.sleep(1);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
