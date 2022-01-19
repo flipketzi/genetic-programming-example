@@ -11,13 +11,9 @@ public class Brain {
 
     public Vector2D getDirectionVector(){
         int rootCalc = root.calculate();
-        System.out.println(rootCalc);
         int rootVal = Math.abs(rootCalc) % 360;
-        System.out.println(rootVal);
         double radiant = rootVal * (Math.PI / 180);
-        System.out.println(radiant);
         Vector2D dir = new Vector2D(Math.cos(radiant), Math.sin(radiant));
-        System.out.println(dir);
         return dir;
 
     }

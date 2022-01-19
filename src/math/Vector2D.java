@@ -20,6 +20,12 @@ public class Vector2D {
         this.y += direction.y;
         return this;
     }
+    public Vector2D sub(Vector2D direction)
+    {
+        this.x -= direction.x;
+        this.y -= direction.y;
+        return this;
+    }
 
     public Vector2D mult(double val)
     {

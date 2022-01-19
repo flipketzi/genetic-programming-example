@@ -12,7 +12,7 @@ public class TreeNode {
     public final static String[] CONSTANTS = new String[]{"variable", "value"};
     public final static String[] VARIABLES = new String[]{"x", "y"};
     public final static String[] OPERATORS = new String[]{"+", "-", "*"};
-    public final static String[] VALUES = new String[]{"1", "2", "3", "4", "5"};
+    public final static String[] VALUES = new String[]{"1", "2", "3"};
 
     public static String getRandomOperator(){
         return OPERATORS[new Random().nextInt(OPERATORS.length)];
