@@ -6,7 +6,10 @@ public class Brain {
     private TreeNode root;
 
     public Brain(Entity ent){
-        root = new TreeNode(TreeNode.getRandomOperator(), ent, 10);
+        root = new TreeNode(TreeNode.getRandomOperator(), ent, 2);
+    }
+    public Brain(TreeNode root){
+        this.root = root;
     }
 
     public Vector2D getDirectionVector(){
@@ -16,6 +19,14 @@ public class Brain {
         Vector2D dir = new Vector2D(Math.cos(radiant), Math.sin(radiant));
         return dir;
 
+    }
+
+    public void mutate(double prob){
+        root.mutate(prob);
+    }
+
+    public Brain copy(){
+        return new Brain(this.root.copy());
     }
 
     public TreeNode getRoot() {

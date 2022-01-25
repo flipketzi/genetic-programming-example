@@ -68,11 +68,16 @@ public class Entity {
 
     }
 
+    public void setPosition(Vector2D position) {
+        this.position = position;
+    }
+
     public Brain getBrain() {
         return brain;
     }
 
     public void setBrain(Brain brain) {
         this.brain = brain;
+        this.direction = brain.getDirectionVector();
     }
 }
