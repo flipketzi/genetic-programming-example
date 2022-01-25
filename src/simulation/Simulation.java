@@ -54,7 +54,7 @@ public class Simulation implements KeyListener, Runnable
 
 		entityController = new EntityController(envController);
 		EntityRenderer entityRenderer = new EntityRenderer(null, entityController);
-		entityController.createEntities(500);
+		entityController.createEntities(100);
 
 		sc.setValue("map_name", mapPath);
 		StatsRenderer sr = new StatsRenderer(sc, (envController.getMap().getSizeX()*BLOCKSIZE) + 20);
